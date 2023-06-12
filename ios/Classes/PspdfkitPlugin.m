@@ -38,6 +38,7 @@ PSPDFSettingKey const PSPDFSettingKeyHybridEnvironment = @"com.pspdfkit.hybrid-e
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"frameworkVersion" isEqualToString:call.method]) {
         result([@"iOS " stringByAppendingString:PSPDFKitGlobal.versionNumber]);
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(spreadIndexDidChange:) name:PSPDFDocumentViewControllerWillBeginDisplayingSpreadViewNotification object:nil];
     } else if ([@"setLicenseKey" isEqualToString:call.method]) {
         NSString *licenseKey = call.arguments[@"licenseKey"];
         [PSPDFKitGlobal setLicenseKey:licenseKey options:@{PSPDFSettingKeyHybridEnvironment: @"Flutter"}];
@@ -234,6 +235,19 @@ PSPDFSettingKey const PSPDFSettingKeyHybridEnvironment = @"com.pspdfkit.hybrid-e
         @"error": error.localizedDescription
     };
     [channel invokeMethod:@"pspdfkitInstantDownloadFailed" arguments:arguments];
+}
+
+- (void)spreadIndexDidChange:(NSNotification *)notification {
+    PSPDFSpreadView *spreadView = notification.userInfo[@"PSPDFDocumentViewControllerSpreadViewKey"];
+    CGSize spreadViewSize = spreadView.frame.size;
+    
+    NSDictionary *ret = @{
+        @"page": @(spreadView.spreadIndex),
+        @"width": @(spreadViewSize.width),
+        @"height": @(spreadViewSize.height),
+    };
+    
+    [channel invokeMethod:@"spreadIndexDidChange" arguments:ret];
 }
 
 @end

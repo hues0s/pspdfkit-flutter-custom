@@ -12,6 +12,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pspdfkit_example/pdf_widget.dart';
 import 'package:pspdfkit_example/pspdfkit_instant_collaboration_example.dart';
 import 'package:pspdfkit_example/pspdfkit_measurement_tools.dart';
 import 'package:pspdfkit_example/pspdfkit_pdf_generation_example.dart';
@@ -147,21 +148,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void showDocument() async {
     final extractedDocument = await extractAsset(context, _documentPath);
     await Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(
-        builder: (_) => Scaffold(
-            extendBodyBehindAppBar: PlatformUtils.isAndroid(),
-            // Do not resize the the document view on Android or
-            // it won't be rendered correctly when filling forms.
-            resizeToAvoidBottomInset: PlatformUtils.isIOS(),
-            appBar: AppBar(),
-            body: SafeArea(
-                top: false,
-                bottom: false,
-                child: Container(
-                    padding: PlatformUtils.isCupertino(context)
-                        ? null
-                        : const EdgeInsets.only(top: kToolbarHeight),
-                    child: PspdfkitWidget(
-                        documentPath: extractedDocument.path))))));
+        builder: (context) => PdfWidget(
+              extractedDocument: extractedDocument,
+            )));
   }
 
   void showDocumentPlatformStyle() async {

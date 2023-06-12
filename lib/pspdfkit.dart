@@ -268,6 +268,8 @@ class Pspdfkit {
   /// ViewControllerDidDismiss callback for PDFViewController
   static void Function()? pdfViewControllerDidDismiss;
 
+  static void Function(dynamic arguments)? spreadIndexDidChange;
+
   /// Called when instant synchronization starts.
   static void Function(String? documentId)? instantSyncStarted;
 
@@ -305,6 +307,9 @@ class Pspdfkit {
           break;
         case 'pdfViewControllerDidDismiss':
           pdfViewControllerDidDismiss?.call();
+          break;
+        case 'spreadIndexDidChange':
+          spreadIndexDidChange?.call(call.arguments);
           break;
         case 'pspdfkitInstantSyncStarted':
           instantSyncStarted?.call(call.arguments as String);
